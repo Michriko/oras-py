@@ -160,6 +160,24 @@ def test_directory_push_pull(tmp_path, registry, credentials, target_dir):
     assert os.path.exists(files[0])
     assert "artifact.txt" in os.listdir(files[0])
 
+@pytest.mark.with_auth(False)
+def test_directory_push_pull_skip_unpack(tmp_path, registry, credentials, target_dir):
+    """
+    Test push and pull for directory
+    """
+    client = oras.client.OrasClient(hostname=registry, insecure=True)
+
+    # Test upload of a directory
+    upload_dir = os.path.join(here, "upload_data")
+    res = client.push(files=[upload_dir], target=target_dir)
+    assert res.status_code == 201
+    files = client.pull(target=target_dir, outdir=tmp_path)
+
+    assert len(files) == 1
+    assert os.path.basename(files[0]) == "upload_data"
+    assert str(tmp_path) in files[0]
+    assert os.path.exists(files[0])
+    assert "artifact.txt" in os.listdir(files[0])
 
 @pytest.mark.with_auth(True)
 def test_directory_push_pull_selfsigned_auth(

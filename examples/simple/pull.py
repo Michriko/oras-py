@@ -28,6 +28,7 @@ def main(args):
             overwrite=not args.keep_old_files,
             outdir=args.output,
             target=args.target,
+            skip_unpack=args.skip_unpack
         )
     except Exception as e:
         logger.exit(str(e))
@@ -73,6 +74,7 @@ def get_parser():
     )
     parser.add_argument("--output", help="output directory.", default=os.getcwd())
     parser.add_argument("target", help="target")
+    parser.add_argument("--skip-unpack", help="skip unpacking layers", default=False)
     parser.add_argument(
         "--debug",
         dest="debug",
